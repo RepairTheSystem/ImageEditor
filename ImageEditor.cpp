@@ -31,7 +31,7 @@ struct header_struct{
  */
 
 int main (){
-    ifstream img("3.bmp", ios::binary);
+    ifstream img("C://CODE//C++//ImageEditor//3.bmp", ios::binary);
     fstream new_img("new_img.bmp", ios::binary | ios::trunc | ios::out | ios::in);
 
     if (!img.is_open() or !new_img.is_open()){
