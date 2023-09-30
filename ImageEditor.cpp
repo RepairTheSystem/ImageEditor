@@ -4,70 +4,90 @@
 
 using namespace std;
 
-#pragma pack(1);
-struct header_struct{
+// Типы данных BMP-файла
+#pragma pack(push, 1)
+struct BMPHeader {
     uint16_t signature;
-    uint32_t file_size;
-    uint16_t reserved1;
-    uint16_t reserved2;
-    uint32_t byte_to_pix;
+    uint32_t img_size;
+    uint32_t reserved;
+    uint32_t data_offset;
     uint32_t header_size;
     int32_t width;
     int32_t height;
-    uint16_t planes;
-    uint16_t bits_per_pix;
+    uint16_t color_planes;
+    uint16_t bits_per_pixel;
     uint32_t compression;
-    uint32_t data_size;
-    int32_t horizontal_resolution;
-    int32_t vertical_resolution;
-    uint32_t colors;
+    uint32_t image_size;
+    int32_t x_pixels_per_meter;
+    int32_t y_pixels_per_meter;
+    uint32_t colors_used;
     uint32_t important_colors;
 };
-#pragma pack();
+#pragma pack(pop)
 
-/* void fill_header(ifstream& img, fstream& new_img){
+struct pixel_struct{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+};
 
+// Функция для поворота изображения на 90 градусов по часовой стрелке
+void rotateImage(std::vector<pixel_struct>& pix, int width, int height) {
+    vector<pixel_struct> new_pix(pix.size());
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int new_x = y;
+            int new_y = width - x - 1;
+            
+            int original_index = y * width + x;
+            int new_index = new_y * height + new_x;
+            
+            new_pix[new_index] = pix[original_index];
+        }
+    }
+    
+    pix = new_pix;
 }
- */
 
-int main (){
+int main() {
     ifstream img("C://CODE//C++//ImageEditor//3.bmp", ios::binary);
-    fstream new_img("new_img.bmp", ios::binary | ios::trunc | ios::out | ios::in);
+    ofstream new_img("C://CODE//C++//ImageEditor//new_img.bmp", ios::binary);
 
-    if (!img.is_open() or !new_img.is_open()){
-        cout << "Не удалось открыть файл";
-
+    if (!img.is_open()) {
+        cout << "Не удалось открыть файл!" << endl;
         return 0;
     }
-    else{
-        cout << "удалось прочитать изображение" << endl;
+    
+    BMPHeader header;
+    
+    img.read(reinterpret_cast<char*>(&header), sizeof(header));
+    
+    // Вычисление размера изображения
+    int width = header.width;
+    int height = header.height;
+    int padding = 0;
 
-        header_struct header;
-        img.read(reinterpret_cast<char *>(&header), sizeof(header));
-        
-        int32_t new_width = header.height;
-        int32_t new_height = header.width;
-        int32_t row_size = (new_width * header.bits_per_pix + 31) / 8;
+    // Выделение памяти для хранения пикселей изображения
+    vector<pixel_struct> pix(width * height);
+    
+    // Чтение пикселей изображения
+    img.read(reinterpret_cast<char*>(pix.data()), pix.size() * 3);
+    // Запись заголовков BMP в выходной файл
+    BMPHeader new_header = header;
+    new_header.width = height;
+    new_header.height = width;
+    new_img.write(reinterpret_cast<const char*>(&new_header), sizeof(new_header));
+    
+    // Создание выходного файла
+    
+    // Поворот изображения
+    rotateImage(pix, width, height);
 
-        vector<uint8_t> buffer(row_size, 0);
+    // Запись пикселей изображения в выходной файл
+    new_img.write(reinterpret_cast<const char *>(pix.data()), pix.size() * 3);
 
-        header_struct new_header = header;
-        new_header.width = new_width;
-        new_header.height = new_height;
-        new_header.file_size = row_size * new_height + new_header.byte_to_pix;
-
-        new_img.write(reinterpret_cast<char*> (&new_header), sizeof(new_header));
-
-        for (int32_t y = 0; y < header.height; ++y) {
-            int32_t newRow = header.height - y - 1;
-            for (int32_t x = 0; x < header.width; ++x) {
-                img.read(reinterpret_cast<char*>(&buffer[0]), row_size);
-                new_img.write(reinterpret_cast<char*>(&buffer[0]), row_size);
-            }
-        }
-        new_img.close();
-        img.close();
-    }
-
+    cout << "Изображение успешно повернуто и сохранено в файле 'output.bmp'." << endl;
+    
     return 0;
 }
