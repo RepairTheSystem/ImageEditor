@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -33,8 +32,10 @@ struct pixel_struct{
 };
 
 // Функция для поворота изображения на 90 градусов по часовой стрелке
-void rotateImage(std::vector<pixel_struct>& pix, int width, int height) {
+void rotateImage(std::vector<pixel_struct>& pix, BMPHeader &header) {
     vector<pixel_struct> new_pix(pix.size());
+    int width = header.width;
+    int height = header.height;
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -47,7 +48,8 @@ void rotateImage(std::vector<pixel_struct>& pix, int width, int height) {
             new_pix[new_index] = pix[original_index];
         }
     }
-
+    header.width = height;
+    header.height = width;
     pix = new_pix;
 }
 
@@ -64,30 +66,22 @@ int main() {
 
     img.read(reinterpret_cast<char*>(&header), sizeof(header));
 
-    // Вычисление размера изображения
     int width = header.width;
     int height = header.height;
 
-    // Выделение памяти для хранения пикселей изображения
     vector<pixel_struct> pix(width * height);
 
-    // Чтение пикселей изображения
     img.read(reinterpret_cast<char*>(pix.data()), pix.size() * 3);
-    // Запись заголовков BMP в выходной файл
-    BMPHeader new_header = header;
-    new_header.width = height;
-    new_header.height = width;
-    new_img.write(reinterpret_cast<const char*>(&new_header), sizeof(new_header));
+    
+    rotateImage(pix, header);
 
-    // Создание выходного файла
-
-    // Поворот изображения
-    rotateImage(pix, width, height);
-
-    // Запись пикселей изображения в выходной файл
-    new_img.write(reinterpret_cast<const char *>(pix.data()), pix.size() * 3);
+    new_img.write(reinterpret_cast<char*>(&header), sizeof(header));
+    new_img.write(reinterpret_cast<char*>(pix.data()), pix.size() * 3);
 
     cout << "Изображение успешно повернуто и сохранено в файле 'output.bmp'." << endl;
 
-return 0;
+    img.close();
+    new_img.close();
+    
+    return 0;
 }
