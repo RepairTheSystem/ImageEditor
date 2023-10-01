@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -34,7 +35,7 @@ struct pixel_struct{
 // Функция для поворота изображения на 90 градусов по часовой стрелке
 void rotateImage(std::vector<pixel_struct>& pix, int width, int height) {
     vector<pixel_struct> new_pix(pix.size());
-    
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int new_x = y;
@@ -46,31 +47,30 @@ void rotateImage(std::vector<pixel_struct>& pix, int width, int height) {
             new_pix[new_index] = pix[original_index];
         }
     }
-    
+
     pix = new_pix;
 }
 
 int main() {
-    ifstream img("C://CODE//C++//ImageEditor//3.bmp", ios::binary);
+    ifstream img("C://CODE//C++//ImageEditor//Rainier.bmp", ios::binary);
     ofstream new_img("C://CODE//C++//ImageEditor//new_img.bmp", ios::binary);
 
     if (!img.is_open()) {
         cout << "Не удалось открыть файл!" << endl;
         return 0;
     }
-    
+
     BMPHeader header;
-    
+
     img.read(reinterpret_cast<char*>(&header), sizeof(header));
-    
+
     // Вычисление размера изображения
     int width = header.width;
     int height = header.height;
-    int padding = 0;
 
     // Выделение памяти для хранения пикселей изображения
     vector<pixel_struct> pix(width * height);
-    
+
     // Чтение пикселей изображения
     img.read(reinterpret_cast<char*>(pix.data()), pix.size() * 3);
     // Запись заголовков BMP в выходной файл
@@ -78,9 +78,9 @@ int main() {
     new_header.width = height;
     new_header.height = width;
     new_img.write(reinterpret_cast<const char*>(&new_header), sizeof(new_header));
-    
+
     // Создание выходного файла
-    
+
     // Поворот изображения
     rotateImage(pix, width, height);
 
@@ -88,6 +88,6 @@ int main() {
     new_img.write(reinterpret_cast<const char *>(pix.data()), pix.size() * 3);
 
     cout << "Изображение успешно повернуто и сохранено в файле 'output.bmp'." << endl;
-    
-    return 0;
+
+return 0;
 }
