@@ -138,7 +138,7 @@ int main() {
     string file_name;
 
     cin >> file_name;
-    file_name += ".bmp";
+    file_name = file_name + ".bmp";
 
     ifstream img(file_name, ios::binary);
     ofstream new_img("new_img.bmp", ios::binary | ios::trunc);
@@ -171,7 +171,7 @@ int main() {
     if (command1 == '1')
         rotate_right(pix, header);
     else if (command1 == '2')
-        rotate_right(pix, header);
+        rotate_left(pix, header);
     
     int radius;
     cout << "Введите глубину размытия по Гауссу " << endl;
