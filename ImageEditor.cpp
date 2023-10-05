@@ -53,20 +53,20 @@ void gauss(vector<pixel_struct>& pix, int width, int height, int radius) {
     }
 
     // применяем размытие
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             double r = 0.0, g = 0.0, b = 0.0;
             int index = y * width + x;
 
-            for (int i = -radius; i <= radius; ++i) {
-                int neighborX = x + i;
-                if (neighborX >= 0 && neighborX < width) {
-                    int neighborIndex = y * width + neighborX;
+            for (int i = -radius; i <= radius; i++) {
+                int neighbor_X = x + i;
+                if (neighbor_X >= 0 and neighbor_X < width) {
+                    int neighbor_index = y * width + neighbor_X;
                     double weight = kernel[i + radius];
 
-                    r += pix[neighborIndex].red * weight;
-                    g += pix[neighborIndex].green * weight;
-                    b += pix[neighborIndex].blue * weight;
+                    r += pix[neighbor_index].red * weight;
+                    g += pix[neighbor_index].green * weight;
+                    b += pix[neighbor_index].blue * weight;
                 }
             }
 
@@ -138,7 +138,7 @@ int main() {
     string file_name;
 
     cin >> file_name;
-    file_name = file_name + ".bmp";
+    file_name = "" + file_name + ".bmp";
 
     ifstream img(file_name, ios::binary);
     ofstream new_img("new_img.bmp", ios::binary | ios::trunc);
