@@ -1,10 +1,12 @@
 #include "rotate.h"
+
+// function to rotate the image 90 degrees clockwise
 void rotate_right(std::vector<pixel_struct>& pix, BMPHeader &header) {
-    std::vector<pixel_struct> new_pix(pix.size());
+    std::vector<pixel_struct> rotated_pix(pix.size());
     int width = header.width;
     int height = header.height;
 
-    // симметрично отражаем каждый пиксель
+    // symmetrically reflect each pixel
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int new_x = y;
@@ -13,24 +15,23 @@ void rotate_right(std::vector<pixel_struct>& pix, BMPHeader &header) {
             int original_index = y * width + x;
             int new_index = new_y * height + new_x;
             
-            new_pix[new_index] = pix[original_index];
+            rotated_pix[new_index] = pix[original_index];
         }
     }
-    // меняем параметры заголвка для нового файла
+    // changing the header parameters for the new file
     header.width = height;
     header.height = width;
 
-    // обновляем массив пикселей
-    pix = new_pix;
+    // updating the pixel array
+    pix = rotated_pix;
 }
- 
-// функция для поворота изображения на 90 градусов против часовой стрелки
+// function to rotate the image 90 degrees counterclockwise
 void rotate_left(std::vector<pixel_struct>& pix, BMPHeader &header) {
-    std::vector<pixel_struct> new_pix(pix.size());
+    std::vector<pixel_struct> rotated_pix(pix.size());
     int width = header.width;
     int height = header.height;
 
-    // симметрично отражаем каждый пиксель
+    // symmetrically reflect each pixel
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int new_x = height - y - 1;
@@ -39,13 +40,13 @@ void rotate_left(std::vector<pixel_struct>& pix, BMPHeader &header) {
             int original_index = y * width + x;
             int new_index = new_y * height + new_x;
 
-            new_pix[new_index] = pix[original_index];
+            rotated_pix[new_index] = pix[original_index];
         }
-    }
-    // меняем параметры заголвка для нового файла
+    } 
+    // changing the header parameters for the new file
     header.width = height;
     header.height = width;
 
-    // обновляем массив пикселей
-    pix = new_pix;
+    // updating the pixel array
+    pix = rotated_pix;
 }

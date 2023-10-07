@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 
+// creating structures
 struct pixel_struct {
     uint8_t red;
     uint8_t green;
@@ -28,4 +29,6 @@ struct BMPHeader{
 };
 #pragma pack(pop)
 
+//initialize the rotation functions 
 void rotate_right(std::vector<pixel_struct> &pix, BMPHeader &header);
+void rotate_left(std::vector<pixel_struct> &pix, BMPHeader &header);

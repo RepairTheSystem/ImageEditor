@@ -1,8 +1,8 @@
-// функция размытия по Гауссу
+// Gauss blur function
 #include <cmath>
 #include "Gauss_blur.h"
 
-// вычисляем Гауссово ядро
+// calculate the Gaussian kernel
 std::vector<double>gauss_kernel(int radius){
     std::vector<double> kernel(2 * radius + 1);
     double sigma = static_cast<double>(radius) / 3.0;
@@ -23,7 +23,7 @@ std::vector<double>gauss_kernel(int radius){
 void gauss(std::vector<pixel_struct>& pix, int width, int height, int radius) {
     std::vector<pixel_struct> blur_pix(width * height);
     std::vector<double> kernel = gauss_kernel(radius);
-    // применяем размытие
+    // apply a blur
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             double r = 0.0, g = 0.0, b = 0.0;
