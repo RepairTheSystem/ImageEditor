@@ -17,10 +17,10 @@ int main() {
     string file_name;
 
     cin >> file_name;
-    file_name = "C://CODE//C++//ImageEditor//" + file_name + ".bmp";
+    file_name = file_name + ".bmp";
 
     ifstream img(file_name, ios::binary);
-    ofstream new_img("C://CODE//C++//ImageEditor//new_img.bmp", ios::binary | ios::trunc);
+    ofstream new_img("new_img.bmp", ios::binary | ios::trunc);
 
     // checking for the correctness of the input
     if (!img.is_open()) {
